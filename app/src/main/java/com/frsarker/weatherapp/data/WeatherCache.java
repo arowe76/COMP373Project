@@ -3,6 +3,7 @@ package com.frsarker.weatherapp.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import com.frsarker.weatherapp.WeatherResponse;
 
 
 /**
@@ -26,9 +27,25 @@ public class WeatherCache {
 
     public WeatherCache(Context context) {
         this.prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-
     }
 
+    public static class CachedWeather {
+        private final WeatherResponse response;
+        private final long timestampMillis;
+
+        public CachedWeather(WeatherResponse response, long timestampMillis) {
+            this.response = response;
+            this.timestampMillis = timestampMillis;
+        }
+
+        public WeatherResponse getResponse() {
+            return response;
+        }
+
+        public long getTimestampMillis() {
+            return timestampMillis;
+        }
+    }
 
 
 }
