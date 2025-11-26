@@ -25,6 +25,9 @@ import retrofit2.Response;
  *    This becomes messy.  The Repository pattern fixes that.
  *
  **** Now handles BOTH remote (API) and local (cache) data sources.****
+ *       - Try network first
+ *       - On success --> save to cache + return fresh data
+ *       - On failure --> try cache; if exist, return cached; otherwise, error
  */
 
 public class WeatherRepository {
