@@ -9,13 +9,13 @@ import java.util.Locale;
 
 /**
  * WeatherCache
+ * ------------
  *
  * Simple cache that stores the last known weather for a city using SharedPreferences.
  *    - Saves WeatherResponse as JSON.
  *    - Also stores a timestamp of when it was saved.
  *    - Allows loading cached weather if network is unavailable.
  */
-
 public class WeatherCache {
 
     private static final String PREF_NAME = "weather_cache_prefs";
@@ -30,7 +30,7 @@ public class WeatherCache {
     }
 
     /**
-     * CachedWeather
+     * CachedWeather - small wrapper around WeatherResponse + timestamp.
      */
     public static class CachedWeather {
         private final WeatherResponse response;

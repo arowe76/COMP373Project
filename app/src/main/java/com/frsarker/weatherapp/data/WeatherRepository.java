@@ -12,6 +12,7 @@ import retrofit2.Response;
 
 /**
  * WeatherRepository Class
+ * -----------------------
  *
  * The WeatherRepository class is part of the "data layer" in the application's architecture.
  *
@@ -23,7 +24,7 @@ import retrofit2.Response;
  *
  *    This becomes messy.  The Repository pattern fixes that.
  *
- ****
+ **** Now handles BOTH remote (API) and local (cache) data sources.****
  */
 
 public class WeatherRepository {
@@ -46,9 +47,9 @@ public class WeatherRepository {
         void onError(String message);
     }
 
-
-
-
+    /**
+     * Fetch weather, preferring remote; fallback to cache if needed.
+     */
     public void getCurrentWeatherWithCache(final String cityName, final WeatherCallback callback) {
         Call<WeatherResponse> call = apiService.getCurrentWeather(
                 cityName,
@@ -70,6 +71,7 @@ public class WeatherRepository {
 
                 } else {
 
+                    // API call failed logically (4xx/5xx) --> try cache...
                     WeatherCache.CachedWeather cached = cache.loadWeather(cityName);
                     if (cached != null) {
                         callback.onSuccess(cached.getResponse(), true, cached.getTimestampMillis());
@@ -82,6 +84,7 @@ public class WeatherRepository {
             }
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                // Network error --> try cache...
                 WeatherCache.CachedWeather cached = cache.loadWeather(cityName);
                 if (cached != null) {
                     callback.onSuccess(cached.getResponse(), true, cached.getTimestampMillis());
