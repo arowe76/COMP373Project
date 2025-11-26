@@ -27,7 +27,7 @@ import retrofit2.Response;
  **** Now handles BOTH remote (API) and local (cache) data sources.****
  *       - Try network first
  *       - On success --> save to cache + return fresh data
- *       - On failure --> try cache; if exist, return cached; otherwise, error
+ *       - On failure --> try cache; if exists, return cached; otherwise, error
  */
 
 public class WeatherRepository {
