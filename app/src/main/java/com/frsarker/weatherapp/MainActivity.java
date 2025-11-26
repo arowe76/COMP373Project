@@ -8,9 +8,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 
+import com.frsarker.weatherapp.data.WeatherCache;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import com.frsarker.weatherapp.data.WeatherRepository;
+import com.frsarker.weatherapp.data.WeatherRepository;
 
 import com.frsarker.weatherapp.BuildConfig;
 import com.frsarker.weatherapp.WeatherResponse;
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     // UI elements for user input
     private EditText searchCityEditText;
     private Button searchButton;
+    private WeatherRepository weatherRepository;
 
     // UI elements for displaying weather data
     TextView addressTxt, updated_atTxt, statusTxt, tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
@@ -59,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d("DEBUG", "onCreate: Started");      // Shows in Logcat
         setContentView(R.layout.activity_main);             // This loads UI...
         Log.d("DEBUG", "setContentView: End");    // Shows in Logcat
+
+        // Setup Retrofit + Repository + Cache...
+        WeatherApiService apiService = ApiClient.getClient().create(WeatherApiService.class);
+        WeatherCache weatherCache = new WeatherCache(getApplicationContext());
+        weatherRepository = new WeatherRepository(apiService, weatherCache);
 
          // Initialize your EditText and Button views...
         searchCityEditText = findViewById(R.id.searchCity);
