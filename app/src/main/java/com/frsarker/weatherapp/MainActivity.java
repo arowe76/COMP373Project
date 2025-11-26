@@ -15,7 +15,6 @@ import retrofit2.Response;
 
 import com.frsarker.weatherapp.data.WeatherRepository;
 
-
 import com.frsarker.weatherapp.BuildConfig;
 import com.frsarker.weatherapp.WeatherResponse;
 import com.frsarker.weatherapp.WeatherApiService;
