@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     if (fromCache) {
                         Toast.makeText(MainActivity.this,
                                 "Showing cached data (offline or error).",
-                                Toast.LENGTH_LONG.show;
+                                Toast.LENGTH_LONG).show();
                     }
                 }
                 @Override
