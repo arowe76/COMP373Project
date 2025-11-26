@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("API_CHECK", "Using API key: " + API_KEY);    // Shows in Logcat
             Log.d("API_CHECK", "City: " + cityName);            // Shows in Logcat
 
-            weatherRepository.getCurrentWeatherWithCache((cityName, new WeatherRepository.WeatherCallback() {
+            weatherRepository.getCurrentWeatherWithCache(cityName, new WeatherRepository.WeatherCallback() {
                 @Override
                 public void onSuccess(WeatherResponse weather, boolean fromCache, long lastUpdatedMillis) {
                     // Logs for Debugging...
