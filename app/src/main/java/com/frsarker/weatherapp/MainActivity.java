@@ -51,14 +51,15 @@ public class MainActivity extends AppCompatActivity {
     TextView addressTxt, updated_atTxt, statusTxt, tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
             sunsetTxt, windTxt, pressureTxt, humidityTxt;
 
+    private TextView offlineBannerTxt;
+
 
     /**
      * Initializes the app when activity is created.
      * Sets up UI components, binds views and fetches default city weather ("Chicago").
-     *
      */
-     @Override
-     protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("DEBUG", "onCreate: Started");      // Shows in Logcat
         setContentView(R.layout.activity_main);             // This loads UI...
@@ -69,12 +70,12 @@ public class MainActivity extends AppCompatActivity {
         WeatherCache weatherCache = new WeatherCache(getApplicationContext());
         weatherRepository = new WeatherRepository(apiService, weatherCache);
 
-         // Initialize your EditText and Button views...
+        // Initialize your EditText and Button views...
         searchCityEditText = findViewById(R.id.searchCity);
         searchButton = findViewById(R.id.searchButton);
         Log.d("DEBUG", "searchButton: End");      // Shows in Logcat
 
-         // Bind views from the layout...
+        // Bind views from the layout...
         addressTxt = findViewById(R.id.address);
         updated_atTxt = findViewById(R.id.updated_at);
         statusTxt = findViewById(R.id.status);
@@ -86,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
         windTxt = findViewById(R.id.wind);
         pressureTxt = findViewById(R.id.pressure);
         humidityTxt = findViewById(R.id.humidity);
+
+        offlineBannerTxt = findViewById(R.id.offlineBanner);
+
         Log.d("DEBUG", "findViewById: End");     // Shows in Logcat
 
         // Set default city weather when app launches...
@@ -100,13 +104,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Button clicked", Toast.LENGTH_SHORT).show();  // Shows in GUI
 
             String city = searchCityEditText.getText().toString().trim();
-                if (!city.isEmpty()) {
-                    //Debugging Toast - Confirm if the click is being registered & city is being passed...
-                    Toast.makeText(this, "Search for: " + city, Toast.LENGTH_SHORT).show();   // Shows in GUI
-                    fetchWeatherData(city);
-                }
-            });
-        }
+            if (!city.isEmpty()) {
+                //Debugging Toast - Confirm if the click is being registered & city is being passed...
+                Toast.makeText(this, "Search for: " + city, Toast.LENGTH_SHORT).show();   // Shows in GUI
+                fetchWeatherData(city);
+            }
+        });
+    }
 
 
     /**
@@ -115,72 +119,73 @@ public class MainActivity extends AppCompatActivity {
      * @param cityName Name of the city to retrieve weather information for...
      */
     private void fetchWeatherData(String cityName) {
-            WeatherApiService apiService = ApiClient.getClient().create(WeatherApiService.class);
-            // Logs for Debugging...
-            Log.d("API_CHECK", "Using API key: " + API_KEY);    // Shows in Logcat
-            Log.d("API_CHECK", "City: " + cityName);            // Shows in Logcat
+        WeatherApiService apiService = ApiClient.getClient().create(WeatherApiService.class);
+        // Logs for Debugging...
+        Log.d("API_CHECK", "Using API key: " + API_KEY);    // Shows in Logcat
+        Log.d("API_CHECK", "City: " + cityName);            // Shows in Logcat
 
-            weatherRepository.getCurrentWeatherWithCache(cityName, new WeatherRepository.WeatherCallback() {
-                @Override
-                public void onSuccess(WeatherResponse weather, boolean fromCache, long lastUpdatedMillis) {
-                    // Logs for Debugging...
-                    Log.d("WEATHER_RESPONSE", "City: " + weather.getCityName());          // Shows in Logcat
-                    Log.d("WEATHER_RESPONSE", "Temp: " + weather.getMain().getTemp());    // Shows in Logcat
-                    Log.d("WEATHER_RESPONSE", "Min: " + weather.getMain().getTempMin());  // Shows in Logcat
-                    Log.d("WEATHER_RESPONSE", "Max: " + weather.getMain().getTempMax());  // Shows in Logcat
+        weatherRepository.getCurrentWeatherWithCache(cityName, new WeatherRepository.WeatherCallback() {
+            @Override
+            public void onSuccess(WeatherResponse weather, boolean fromCache, long lastUpdatedMillis) {
+                // Logs for Debugging...
+                Log.d("WEATHER_RESPONSE", "City: " + weather.getCityName());          // Shows in Logcat
+                Log.d("WEATHER_RESPONSE", "Temp: " + weather.getMain().getTemp());    // Shows in Logcat
+                Log.d("WEATHER_RESPONSE", "Min: " + weather.getMain().getTempMin());  // Shows in Logcat
+                Log.d("WEATHER_RESPONSE", "Max: " + weather.getMain().getTempMax());  // Shows in Logcat
 
-                    // Build address...
-                    String address = weather.getCityName() + "," + weather.getSys().getCountry();
-                    // Build updatedAt message...
-                    String updatedAt;
-                    if (fromCache) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-                        String time = sdf.format(new Date(lastUpdatedMillis));
-                        updatedAt = "Last updated (cached) at "  + time;
-                    } else {
-                        updatedAt = "Updated just now";
-                    }
-
-                    // Convert temperatures from Celsius to Fahrenheit...
-                    float tempCelsius = weather.getMain().getTemp();
-                    float tempMinCelsius = weather.getMain().getTempMin();
-                    float tempMaxCelsius = weather.getMain().getTempMax();
-
-                    float tempFahrenheit = (tempCelsius * 9 / 5) + 32;
-                    float tempMinFahrenheit = (tempMinCelsius * 9 / 5) - 32;
-                    float tempMaxFahrenheit = (tempMaxCelsius * 9 / 5) + 32;
-
-                    // Format and extract weather data for UI update...
-                    String temp = String.format(Locale.getDefault(), "%.1f°F", tempFahrenheit);
-                    String tempMin = "Min Temperature: " + String.format(Locale.getDefault(), "%.1f°F", tempMinFahrenheit);
-                    String tempMax = "Max Temperature: " + String.format(Locale.getDefault(), "%.1f°F", tempMaxFahrenheit);
-                    String wind = String.format(Locale.getDefault(), "%.1f m/s", weather.getWind().getSpeed());
-                    String pressure = weather.getMain().getPressure() + " hPa";
-                    String humidity = weather.getMain().getHumidity() + "%";
-
-                    String sunrise = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(new Date(weather.
-                            getSys().getSunrise() * 1000));
-                    String sunset = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(new Date(weather.
-                            getSys().getSunset() * 1000));
-
-                    String weatherDescription = weather.getWeather().get(0).getDescription();
-
-                    Log.d("WEATHER_RESPONSE", "Calling updateWeatherUI...");        // Shows in Logcat
-                    updateWeatherUI(address, updatedAt, weatherDescription, temp, tempMin, tempMax, sunrise,
-                            sunset, wind, pressure, humidity);
-
-                    if (fromCache) {
-                        Toast.makeText(MainActivity.this,
-                                "Showing cached data (offline or error).",
-                                Toast.LENGTH_LONG).show();
-                    }
+                // Build address...
+                String address = weather.getCityName() + "," + weather.getSys().getCountry();
+                // Build updatedAt message...
+                String updatedAt;
+                if (fromCache) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                    String time = sdf.format(new Date(lastUpdatedMillis));
+                    updatedAt = "Last updated (cached) at " + time;
+                } else {
+                    updatedAt = "Updated just now";
                 }
-                @Override
-                public void onError(String message) {
-                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
-                    Log.e("WEATHER_ERROR", message);
+
+                // Convert temperatures from Celsius to Fahrenheit...
+                float tempCelsius = weather.getMain().getTemp();
+                float tempMinCelsius = weather.getMain().getTempMin();
+                float tempMaxCelsius = weather.getMain().getTempMax();
+
+                float tempFahrenheit = (tempCelsius * 9 / 5) + 32;
+                float tempMinFahrenheit = (tempMinCelsius * 9 / 5) - 32;
+                float tempMaxFahrenheit = (tempMaxCelsius * 9 / 5) + 32;
+
+                // Format and extract weather data for UI update...
+                String temp = String.format(Locale.getDefault(), "%.1f°F", tempFahrenheit);
+                String tempMin = "Min Temperature: " + String.format(Locale.getDefault(), "%.1f°F", tempMinFahrenheit);
+                String tempMax = "Max Temperature: " + String.format(Locale.getDefault(), "%.1f°F", tempMaxFahrenheit);
+                String wind = String.format(Locale.getDefault(), "%.1f m/s", weather.getWind().getSpeed());
+                String pressure = weather.getMain().getPressure() + " hPa";
+                String humidity = weather.getMain().getHumidity() + "%";
+
+                String sunrise = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(new Date(weather.
+                        getSys().getSunrise() * 1000));
+                String sunset = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(new Date(weather.
+                        getSys().getSunset() * 1000));
+
+                String weatherDescription = weather.getWeather().get(0).getDescription();
+
+                Log.d("WEATHER_RESPONSE", "Calling updateWeatherUI...");        // Shows in Logcat
+                updateWeatherUI(address, updatedAt, weatherDescription, temp, tempMin, tempMax, sunrise,
+                        sunset, wind, pressure, humidity);
+
+                if (fromCache) {
+                    Toast.makeText(MainActivity.this,
+                            "Showing cached data (offline or error).",
+                            Toast.LENGTH_LONG).show();
                 }
-            });
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                Log.e("WEATHER_ERROR", message);
+            }
+        });
     }
 
 
@@ -188,17 +193,17 @@ public class MainActivity extends AppCompatActivity {
      * Update the UI elements with fetched and formatted weather data.
      * Also triggers dynamic background color updates based on the weather condition.
      *
-     * @param address address City and country
-     * @param updatedAt Update timestamp
+     * @param address            address City and country
+     * @param updatedAt          Update timestamp
      * @param weatherDescription Weather description (clear, rain, cloudy, etc.)
-     * @param temp Current temperature
-     * @param tempMin Minimum temperature
-     * @param tempMax Maximum temperature
-     * @param sunrise Sunrise time
-     * @param sunset Sunset time
-     * @param wind Wind speed
-     * @param pressure Atmospheric pressure
-     * @param humidity Humidity percentage
+     * @param temp               Current temperature
+     * @param tempMin            Minimum temperature
+     * @param tempMax            Maximum temperature
+     * @param sunrise            Sunrise time
+     * @param sunset             Sunset time
+     * @param wind               Wind speed
+     * @param pressure           Atmospheric pressure
+     * @param humidity           Humidity percentage
      */
     public void updateWeatherUI(String address, String updatedAt, String weatherDescription, String temp, String tempMin,
                                 String tempMax, String sunrise, String sunset, String wind, String pressure, String
@@ -228,7 +233,32 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * Dynamically changes teh screen background color based on the current weather description.
+     * Shows or hides the offline banner depending on whether data is from cache.
+     *
+     * @param fromCache         // true if we are using cached weather, false if fresh from API
+     * @param lastUpdatedMillis // timestamp (System.currentTimeMillis) when the cached data was saved
+     */
+    private void setOfflineBanner(boolean fromCache, long lastUpdatedMillis) {
+        if (offlineBannerTxt == null) {
+            return;
+        }
+            if (fromCache) {
+                // Format timestamp into a human-readable time...
+                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                String time = sdf.format(new Date(lastUpdatedMillis));
+                String bannerText = "Offline mode: showing cached data from " + time;
+
+                offlineBannerTxt.setText(bannerText);
+                offlineBannerTxt.setVisibility(View.VISIBLE);
+            } else {
+                // Hide banner when we have fresh network data...
+                offlineBannerTxt.setVisibility(View.GONE);
+            }
+        }
+
+
+    /**
+     * Dynamically changes the screen background color based on the current weather description.
      *
      * @param weatherDescription Current weather condition (e.g., clear, clouds, rain)
      */
@@ -274,23 +304,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Applies a specified text color to all weather-related Textviews.
-     *
-     * @param Color The color to apply to text elements.
-     */
-    private void applyTextColor(int Color) {
-         addressTxt.setTextColor(Color);
-         updated_atTxt.setTextColor(Color);
-         statusTxt.setTextColor(Color);
-         tempTxt.setTextColor(Color);
-         temp_minTxt.setTextColor(Color);
-         temp_maxTxt.setTextColor(Color);
-         sunriseTxt.setTextColor(Color);
-         sunsetTxt.setTextColor(Color);
-         windTxt.setTextColor(Color);
-         pressureTxt.setTextColor(Color);
-         humidityTxt.setTextColor(Color);
+        /**
+         * Applies a specified text color to all weather-related Textviews.
+         *
+         * @param Color The color to apply to text elements.
+         */
+        private void applyTextColor ( int Color) {
+            addressTxt.setTextColor(Color);
+            updated_atTxt.setTextColor(Color);
+            statusTxt.setTextColor(Color);
+            tempTxt.setTextColor(Color);
+            temp_minTxt.setTextColor(Color);
+            temp_maxTxt.setTextColor(Color);
+            sunriseTxt.setTextColor(Color);
+            sunsetTxt.setTextColor(Color);
+            windTxt.setTextColor(Color);
+            pressureTxt.setTextColor(Color);
+            humidityTxt.setTextColor(Color);
+        }
     }
-}
 
