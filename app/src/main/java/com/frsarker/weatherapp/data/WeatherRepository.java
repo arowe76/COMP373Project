@@ -1,9 +1,11 @@
 package com.frsarker.weatherapp.data;
 
-import android.os.Bundle;
+import android.content.Context;
+
 import com.frsarker.weatherapp.BuildConfig;
 import com.frsarker.weatherapp.WeatherApiService;
 import com.frsarker.weatherapp.WeatherResponse;
+import com.frsarker.weatherapp.workers.WeatherSyncWorker;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,16 +30,20 @@ import retrofit2.Response;
  *       - Try network first
  *       - On success --> save to cache + return fresh data
  *       - On failure --> try cache; if exists, return cached; otherwise, error
+ *       - On network failure, also schedule auto-sync via WeatherSyncWorker
  */
-
 public class WeatherRepository {
 
     private final WeatherApiService apiService;
     private final WeatherCache cache;
+    private final Context appContext;
 
-    public WeatherRepository(WeatherApiService apiService, WeatherCache cache) {
+    public WeatherRepository(WeatherApiService apiService,
+                             WeatherCache cache,
+                             Context context) {
         this.apiService = apiService;
         this.cache = cache;
+        this.appContext = context.getApplicationContext();
     }
 
     /**
@@ -77,7 +83,10 @@ public class WeatherRepository {
                     // API call failed logically (4xx/5xx) --> try cache...
                     WeatherCache.CachedWeather cached = cache.loadWeather(cityName);
                     if (cached != null) {
-                        callback.onSuccess(cached.getResponse(), true, cached.getTimestampMillis());
+                        callback.onSuccess(cached.getResponse(),
+                                true,
+                                cached.getTimestampMillis()
+                        );
 
                     } else {
 
@@ -87,13 +96,17 @@ public class WeatherRepository {
             }
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) {
-                // Network error --> try cache...
+                // Network error --> schedule auto-sync for this city
+                WeatherSyncWorker.enqueueForCity(appContext, cityName);
+
+                // Then try cache...
                 WeatherCache.CachedWeather cached = cache.loadWeather(cityName);
                 if (cached != null) {
-                    callback.onSuccess(cached.getResponse(), true, cached.getTimestampMillis());
-
+                    callback.onSuccess(cached.getResponse(),
+                            true,
+                            cached.getTimestampMillis()
+                    );
                 } else {
-
                     callback.onError("Network error and no cached data available.");
                 }
             }

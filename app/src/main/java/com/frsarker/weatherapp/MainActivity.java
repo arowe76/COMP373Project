@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         // Setup Retrofit + Repository + Cache...
         WeatherApiService apiService = ApiClient.getClient().create(WeatherApiService.class);
         WeatherCache weatherCache = new WeatherCache(getApplicationContext());
-        weatherRepository = new WeatherRepository(apiService, weatherCache);
+        weatherRepository = new WeatherRepository(apiService, weatherCache, this);
 
         // Initialize your EditText and Button views...
         searchCityEditText = findViewById(R.id.searchCity);
