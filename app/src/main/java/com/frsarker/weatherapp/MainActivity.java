@@ -1,7 +1,6 @@
 package com.frsarker.weatherapp;
 
 import android.util.Log;
-import android.widget.*;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,24 +9,11 @@ import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 
 import com.frsarker.weatherapp.data.WeatherCache;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 import com.frsarker.weatherapp.data.WeatherRepository;
-
-import com.frsarker.weatherapp.BuildConfig;
-import com.frsarker.weatherapp.WeatherResponse;
-import com.frsarker.weatherapp.WeatherApiService;
-import com.frsarker.weatherapp.ApiClient;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
