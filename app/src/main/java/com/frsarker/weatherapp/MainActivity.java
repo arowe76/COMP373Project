@@ -188,6 +188,9 @@ public class MainActivity extends AppCompatActivity {
                 updateWeatherUI(address, updatedAt, weatherDescription, temp, tempMin, tempMax, sunrise,
                         sunset, wind, pressure, humidity);
 
+                // Offline banner will now show when using cache...
+                setOfflineBanner(fromCache, lastUpdatedMillis);
+
                 if (fromCache) {
                     Toast.makeText(MainActivity.this,
                             "Showing cached data (offline or error).",
