@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
      * @param cityName Name of the city to retrieve weather information for...
      */
     private void fetchWeatherData(String cityName) {
-        WeatherApiService apiService = ApiClient.getClient().create(WeatherApiService.class);
+
         // Logs for Debugging...
         Log.d("API_CHECK", "Using API key: " + API_KEY);    // Shows in Logcat
         Log.d("API_CHECK", "City: " + cityName);            // Shows in Logcat
