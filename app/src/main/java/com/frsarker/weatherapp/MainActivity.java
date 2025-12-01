@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 float tempMaxCelsius = weather.getMain().getTempMax();
 
                 float tempFahrenheit = (tempCelsius * 9 / 5) + 32;
-                float tempMinFahrenheit = (tempMinCelsius * 9 / 5) - 32;
+                float tempMinFahrenheit = (tempMinCelsius * 9 / 5) + 32;
                 float tempMaxFahrenheit = (tempMaxCelsius * 9 / 5) + 32;
 
                 // Format and extract weather data for UI update...
