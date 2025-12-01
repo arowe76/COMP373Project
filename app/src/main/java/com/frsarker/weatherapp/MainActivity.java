@@ -2,6 +2,12 @@ package com.frsarker.weatherapp;
 
 import android.util.Log;
 import android.widget.*;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.AsyncTask;
@@ -42,17 +48,21 @@ public class MainActivity extends AppCompatActivity {
     private final String API_URL = "https://api.openweathermap.org/data/2.5/weather";
     // API key, stored securely in BuildConfig
     private final String API_KEY = BuildConfig.WEATHER_API_KEY;
+
+    // Repository + Cache
+    private WeatherRepository weatherRepository;
+    private WeatherCache weatherCache;
+
     // UI elements for user input
     private EditText searchCityEditText;
     private Button searchButton;
-    private WeatherRepository weatherRepository;
 
     // UI elements for displaying weather data
     TextView addressTxt, updated_atTxt, statusTxt, tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
             sunsetTxt, windTxt, pressureTxt, humidityTxt;
 
+    // Offline banner at top/bottom of the screen
     private TextView offlineBannerTxt;
-
 
     /**
      * Initializes the app when activity is created.
@@ -61,13 +71,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Log.d("DEBUG", "onCreate: Started");      // Shows in Logcat
         setContentView(R.layout.activity_main);             // This loads UI...
         Log.d("DEBUG", "setContentView: End");    // Shows in Logcat
 
+
         // Setup Retrofit + Repository + Cache...
         WeatherApiService apiService = ApiClient.getClient().create(WeatherApiService.class);
-        WeatherCache weatherCache = new WeatherCache(getApplicationContext());
+        weatherCache = new WeatherCache(getApplicationContext());
         weatherRepository = new WeatherRepository(apiService, weatherCache, this);
 
         // Initialize your EditText and Button views...
@@ -96,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         fetchWeatherData("Chicago");
 
         // Set up search...
-        searchButton = findViewById(R.id.searchButton);
+        // searchButton = findViewById(R.id.searchButton);
 
         // Set up search button click listener...
         searchButton.setOnClickListener(v -> {
@@ -114,7 +126,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * Makes an asynchronous API call to fetch current weather data for the specified city using Retrofit.
+     * Makes an asynchronous API call to fetch current weather data for the specified city using WeatherRepository
+     * (which handles remote + cache + auto-sync).
      *
      * @param cityName Name of the city to retrieve weather information for...
      */
@@ -156,8 +169,10 @@ public class MainActivity extends AppCompatActivity {
 
                 // Format and extract weather data for UI update...
                 String temp = String.format(Locale.getDefault(), "%.1f°F", tempFahrenheit);
-                String tempMin = "Min Temperature: " + String.format(Locale.getDefault(), "%.1f°F", tempMinFahrenheit);
-                String tempMax = "Max Temperature: " + String.format(Locale.getDefault(), "%.1f°F", tempMaxFahrenheit);
+                String tempMin = "Min Temperature: " + String.format(Locale.getDefault(), "%.1f°F",
+                        tempMinFahrenheit);
+                String tempMax = "Max Temperature: " + String.format(Locale.getDefault(), "%.1f°F",
+                        tempMaxFahrenheit);
                 String wind = String.format(Locale.getDefault(), "%.1f m/s", weather.getWind().getSpeed());
                 String pressure = weather.getMain().getPressure() + " hPa";
                 String humidity = weather.getMain().getHumidity() + "%";
@@ -184,10 +199,11 @@ public class MainActivity extends AppCompatActivity {
             public void onError(String message) {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
                 Log.e("WEATHER_ERROR", message);
+                // Hide banner on hard error (no cache)
+                setOfflineBanner(false, 0L);
             }
         });
     }
-
 
     /**
      * Update the UI elements with fetched and formatted weather data.
@@ -215,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("WEATHER_UI", "Updating UI with fetched weather data");                       // Shows in Logcat
         Toast.makeText(this, "UI updated for: " + address, Toast.LENGTH_LONG).show();    // Shows in GUI
         Log.d("WEATHER_UI", "UI updated for: " + address);                                  // Shows in Logcat
+
         addressTxt.setText(address);
         updated_atTxt.setText(updatedAt);
         statusTxt.setText(weatherDescription.toUpperCase());
@@ -230,7 +247,6 @@ public class MainActivity extends AppCompatActivity {
         // This function will call the setDynamicBackground to update the color (GUI Background) of the current weather...
         setDynamicBackground(weatherDescription);
     }
-
 
     /**
      * Shows or hides the offline banner depending on whether data is from cache.
@@ -323,4 +339,3 @@ public class MainActivity extends AppCompatActivity {
             humidityTxt.setTextColor(Color);
         }
     }
-
