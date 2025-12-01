@@ -1,6 +1,8 @@
 package com.frsarker.weatherapp;
 
+import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -8,9 +10,6 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-import android.view.View;
 
 import com.frsarker.weatherapp.data.WeatherCache;
 import com.frsarker.weatherapp.data.WeatherRepository;
