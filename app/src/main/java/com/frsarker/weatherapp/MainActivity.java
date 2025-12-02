@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private WeatherRepository weatherRepository;
     private WeatherCache weatherCache;
 
+
     // UI elements for user input
     private EditText searchCityEditText;
     private Button searchButton;
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     // UI elements for displaying weather data
     TextView addressTxt, updated_atTxt, statusTxt, tempTxt, temp_minTxt, temp_maxTxt, sunriseTxt,
             sunsetTxt, windTxt, pressureTxt, humidityTxt;
-
+    ImageView currWeatherIcon;
     // Offline banner at top/bottom of the screen
     private TextView offlineBannerTxt;
 
@@ -85,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         windTxt = findViewById(R.id.wind);
         pressureTxt = findViewById(R.id.pressure);
         humidityTxt = findViewById(R.id.humidity);
+        currWeatherIcon = findViewById(R.id.currWeatherIcon);
+
 
         offlineBannerTxt = findViewById(R.id.offlineBanner);
 
@@ -238,6 +242,8 @@ public class MainActivity extends AppCompatActivity {
         windTxt.setText(wind);
         pressureTxt.setText(pressure);
         humidityTxt.setText(humidity);
+        currWeatherIcon.setImageResource(getWeatherIcon(weatherDescription));
+
 
         // This function will call the setDynamicBackground to update the color (GUI Background) of the current weather...
         setDynamicBackground(weatherDescription);
@@ -319,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
             mainContainer.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));  // Light Blue...
             Log.d("WEATHER_UI", "Changing background color to: Light Blue");
             textColor = getResources().getColor(android.R.color.white);
+
         } else if (weatherDescription.contains("clouds")) {
             // Change background and text color based on weather condition...
             mainContainer.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));      // Gray for Clouds...
@@ -368,4 +375,30 @@ public class MainActivity extends AppCompatActivity {
             pressureTxt.setTextColor(Color);
             humidityTxt.setTextColor(Color);
         }
+    private int getWeatherIcon(String description) {
+        description = description.toLowerCase();
+
+        if (description.contains("blizzard")) {
+            return R.drawable.blizzard;
+        } else if (description.contains("snow") || description.contains("flurries") || description.contains("blowing_snow")) {
+            return R.drawable.flurries;
+        } else if (description.contains("clear") && description.contains("night")) {
+            return R.drawable.clear_night;
+        } else if (description.contains("clear") || description.contains("sunny") || description.contains("mostly_sunny")) {
+            return R.drawable.sunny;
+        } else if (description.contains("cloud")) {
+            return R.drawable.cloudy;
+        } else if (description.contains("drizzle")) {
+            return R.drawable.drizzle;
+        } else if (description.contains("haze") || description.contains("fog") || description.contains("dust") || description.contains("smoke")) {
+            return R.drawable.haze_fog_dust_smoke;
+        } else if (description.contains("heavy rain") || description.contains("showers")) {
+            return R.drawable.heavy_rain;
+        } else if (description.contains("rain")) {
+            return R.drawable.showers_rain;
+        } else {
+            return R.drawable.sunny; // default icon
+        }
     }
+
+}
