@@ -190,8 +190,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(String message) {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+
                 Log.e("WEATHER_ERROR", message);
-                // Hide banner on hard error (no cache)
+                Log.e("BANNER_ERROR", "Network AND no cache → triggering no-cache banner");
+
+                // Tell setOfflineBanner: "Error/no cache" case...
                 setOfflineBanner(false, 0L);
             }
         });
@@ -247,11 +250,18 @@ public class MainActivity extends AppCompatActivity {
      * @param lastUpdatedMillis // timestamp (System.currentTimeMillis) when the cached data was saved
      */
     private void setOfflineBanner(boolean fromCache, long lastUpdatedMillis) {
+
+        Log.d("BANNER_DEBUG",
+                "setOfflineBanner called: fromCache=" + fromCache + ", lastUpdatedMillis=" + lastUpdatedMillis);
+        Log.d("BANNER_DEBUG",
+                "offlineBannerTxt is " + (offlineBannerTxt == null ? "NULL" : "NOT NULL"));
+
         if (offlineBannerTxt == null) {
             return;
         }
             if (fromCache) {
-                // Format timestamp into a human-readable time...
+                // CASE #1: Offline, but we DO have cached data
+                // Show banner with "cached from <time>"...
                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
                 String time = sdf.format(new Date(lastUpdatedMillis));
                 String bannerText = "Offline mode: showing cached data from " + time;
@@ -264,56 +274,30 @@ public class MainActivity extends AppCompatActivity {
                     updated_atTxt.setVisibility(View.GONE);
                 }
 
-                /**
-                 // Show Animation...
-                 if (offlineBannerTxt.getVisibility() != View.VISIBLE) {
-                 offlineBannerTxt.clearAnimation();
-                 TranslateAnimation slideDown = new TranslateAnimation(
-                 0, 0,
-                 -offlineBannerTxt.getHeight(),
-                 0
-                 );
-                 slideDown.setDuration(300);
-                 offlineBannerTxt.startAnimation(slideDown);
-                 offlineBannerTxt.setVisibility(View.VISIBLE);
-                 } */
-
             } else {
 
+                if (lastUpdatedMillis == 0L) {
+                    // CASE 2: Offline AND no cached data
+                    // Show a different banner message...
+                    String bannerText = "Offline mode: No cached data available";
 
-                /**
-                // Hide Animation...
-                if (offlineBannerTxt.getVisibility() == View.VISIBLE) {
-                    offlineBannerTxt.clearAnimation();
-                    TranslateAnimation slideUp =  new TranslateAnimation(
-                            0, 0,
-                            0,
-                            -offlineBannerTxt.getHeight()
-                    );
-                    slideUp.setDuration(300);
-                    offlineBannerTxt.startAnimation(slideUp);
+                    offlineBannerTxt.setText(bannerText);
+                    offlineBannerTxt.setVisibility(View.VISIBLE);
 
-                    //
-                    slideUp.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(android.view.animation.Animation animation) { }
-                        @Override
-                        public void onAnimationEnd(android.view.animation.Animation animation) {
-                            offlineBannerTxt.setVisibility(View.GONE);
-                        }
+                    // Hide the "Last updated..." label
+                    if (updated_atTxt != null) {
+                        updated_atTxt.setVisibility(View.GONE);
 
-                        @Override
-                        public void onAnimationRepeat(android.view.animation.Animation animation) { }
+                    }
 
-                    });
-                } */
+                } else {
+                    // CASE 3: Online, fresh data
+                    // Hide banner and show normal "Last updated..." label
+                    offlineBannerTxt.setVisibility(View.GONE);
 
-                // Hide banner when we have fresh network data...
-                offlineBannerTxt.setVisibility(View.GONE);
-
-                // Show the "Last updated..." label again for online mode...
-                if (updated_atTxt != null) {
-                    updated_atTxt.setVisibility(View.VISIBLE);
+                    if (updated_atTxt != null) {
+                        updated_atTxt.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         }
