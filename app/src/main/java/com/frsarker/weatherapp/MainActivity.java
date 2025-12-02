@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.view.animation.TranslateAnimation;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -253,8 +254,48 @@ public class MainActivity extends AppCompatActivity {
                 String bannerText = "Offline mode: showing cached data from " + time;
 
                 offlineBannerTxt.setText(bannerText);
-                offlineBannerTxt.setVisibility(View.VISIBLE);
+
+                // Show Animation...
+                if (offlineBannerTxt.getVisibility() != View.VISIBLE) {
+                    offlineBannerTxt.clearAnimation();
+                    TranslateAnimation slideDown = new TranslateAnimation(
+                            0, 0,
+                            -offlineBannerTxt.getHeight(),
+                            0
+                    );
+                    slideDown.setDuration(300);
+                    offlineBannerTxt.startAnimation(slideDown);
+                    offlineBannerTxt.setVisibility(View.VISIBLE);
+                }
+
             } else {
+
+                // Hide Animation...
+                if (offlineBannerTxt.getVisibility() == View.VISIBLE) {
+                    offlineBannerTxt.clearAnimation();
+                    TranslateAnimation slideUp =  new TranslateAnimation(
+                            0, 0,
+                            0,
+                            -offlineBannerTxt.getHeight()
+                    );
+                    slideUp.setDuration(300);
+                    offlineBannerTxt.startAnimation(slideUp);
+
+                    //
+                    slideUp.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(android.view.animation.Animation animation) { }
+                        @Override
+                        public void onAnimationEnd(android.view.animation.Animation animation) {
+                            offlineBannerTxt.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(android.view.animation.Animation animation) { }
+
+                    });
+                }
+                
                 // Hide banner when we have fresh network data...
                 offlineBannerTxt.setVisibility(View.GONE);
             }
