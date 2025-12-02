@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.view.animation.TranslateAnimation;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -148,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                     // When fresh network data, show a normal "last updated" message...
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
                     String time = sdf.format(new Date(lastUpdatedMillis));
-                    updatedAt = "Updated just now" + time;
+                    updatedAt = "Updated just now " + time;
                 }
 
                 // Convert temperatures from Celsius to Fahrenheit...
