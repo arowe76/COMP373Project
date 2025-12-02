@@ -141,11 +141,14 @@ public class MainActivity extends AppCompatActivity {
                 // Build updatedAt message...
                 String updatedAt;
                 if (fromCache) {
+                    // Show the time only in the orange banner, so the main "updated_at" label can stay empty while
+                    // offline...
+                    updatedAt = "";
+                } else {
+                    // When fresh network data, show a normal "last updated" message...
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
                     String time = sdf.format(new Date(lastUpdatedMillis));
-                    updatedAt = "Last updated (cached) at " + time;
-                } else {
-                    updatedAt = "Updated just now";
+                    updatedAt = "Updated just now" + time;
                 }
 
                 // Convert temperatures from Celsius to Fahrenheit...
@@ -260,22 +263,31 @@ public class MainActivity extends AppCompatActivity {
                 String bannerText = "Offline mode: showing cached data from " + time;
 
                 offlineBannerTxt.setText(bannerText);
+                offlineBannerTxt.setVisibility(View.VISIBLE);
 
-                // Show Animation...
-                if (offlineBannerTxt.getVisibility() != View.VISIBLE) {
-                    offlineBannerTxt.clearAnimation();
-                    TranslateAnimation slideDown = new TranslateAnimation(
-                            0, 0,
-                            -offlineBannerTxt.getHeight(),
-                            0
-                    );
-                    slideDown.setDuration(300);
-                    offlineBannerTxt.startAnimation(slideDown);
-                    offlineBannerTxt.setVisibility(View.VISIBLE);
+                // Hide the "Last Updated..." label while offline...
+                if (updated_atTxt != null) {
+                    updated_atTxt.setVisibility(View.GONE);
                 }
+
+                /**
+                 // Show Animation...
+                 if (offlineBannerTxt.getVisibility() != View.VISIBLE) {
+                 offlineBannerTxt.clearAnimation();
+                 TranslateAnimation slideDown = new TranslateAnimation(
+                 0, 0,
+                 -offlineBannerTxt.getHeight(),
+                 0
+                 );
+                 slideDown.setDuration(300);
+                 offlineBannerTxt.startAnimation(slideDown);
+                 offlineBannerTxt.setVisibility(View.VISIBLE);
+                 } */
 
             } else {
 
+
+                /**
                 // Hide Animation...
                 if (offlineBannerTxt.getVisibility() == View.VISIBLE) {
                     offlineBannerTxt.clearAnimation();
@@ -300,10 +312,15 @@ public class MainActivity extends AppCompatActivity {
                         public void onAnimationRepeat(android.view.animation.Animation animation) { }
 
                     });
-                }
-                
+                } */
+
                 // Hide banner when we have fresh network data...
                 offlineBannerTxt.setVisibility(View.GONE);
+
+                // Show the "Last updated..." label again for online mode...
+                if (updated_atTxt != null) {
+                    updated_atTxt.setVisibility(View.VISIBLE);
+                }
             }
         }
 
