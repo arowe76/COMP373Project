@@ -1,5 +1,9 @@
 package com.frsarker.weatherapp;
 
+import com.frsarker.weatherapp.ForecastResponse;
+import com.frsarker.weatherapp.WeatherApiService;
+import com.frsarker.weatherapp.ApiClient;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +21,13 @@ import com.frsarker.weatherapp.data.WeatherRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 
 /**
@@ -415,5 +425,16 @@ public class MainActivity extends AppCompatActivity {
             return R.drawable.sunny; // default icon
         }
     }
+
+    /**
+     *
+     * @param cityName
+     */
+    private void loadFiveDayForecast(String cityName) {
+            WeatherApiService api = ApiClient.getClient().create(WeatherApiService.class);
+    }
+
+
+
 
 }
