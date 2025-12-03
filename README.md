@@ -1,6 +1,16 @@
 # Weather App
-Our goal is to update a weather app (in Java) to show a 5-day forecast, search for weather by city, fetch weather data
-(temperature, humidity, wind speed, etc.), and provide severe weather alerts.
+A modernized Android weather application built in Java, redesigned for COMP 373 to incorporate architectural thinking,
+modular design, offline-awareness and expanded weather features such as a 5-day forecast.
+
+This project evolves the original COMP 312 Weather App into a more robust, maintainable and architecture-driven mobile 
+system aligned with the goals of software architecture and advanced object-oriented design.
+
+
+
+
+
+
+
 
 ## Mission Statement
 Our mission is to collaboratively develop a weather app that enhances our understanding of open-source software 
