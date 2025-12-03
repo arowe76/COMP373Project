@@ -8,13 +8,7 @@ system aligned with the goals of software architecture and advanced object-orien
 
 ## Mission Statement
 Our mission is to collaboratively design and develop an Android weather application that applies real-world software
-architecture
-
-
-
-
-
-
+architecture principles, design patterns, and modular object-oriented programming techniques.
 
 
 ## Project Overview
