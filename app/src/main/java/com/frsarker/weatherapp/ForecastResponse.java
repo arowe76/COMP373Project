@@ -20,11 +20,11 @@ public class ForecastResponse {
 
         // Main temp info (min/max)
         @SerializedName("main")
-        public WeatherResponse.Main main;
+        public ForecastResponse.Main main;
 
         // Weather description(s) (e.g., "broken clouds")
         @SerializedName("weather")
-        public List<WeatherResponse.Weather> weather;
+        public List<ForecastResponse.Weather> weather;
     }
 
     public static class Main {

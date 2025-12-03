@@ -68,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView forecastDay4;
     private TextView forecastDay5;
 
+    // Right-side Min/Max for each day
+    private TextView forecastMin1, forecastMin2, forecastMin3,  forecastMin4, forecastMin5;
+    private TextView forecastMax1, forecastMax2, forecastMax3,  forecastMax4, forecastMax5;
+
+    // Middle icons for each day
+    private ImageView forecastIcon1, forecastIcon2, forecastIcon3, forecastIcon4, forecastIcon5;
+
+
 
     /**
      * Initializes the app when activity is created.
@@ -86,6 +94,26 @@ public class MainActivity extends AppCompatActivity {
         forecastDay3 = findViewById(R.id.textForecastDay3);
         forecastDay4 = findViewById(R.id.textForecastDay4);
         forecastDay5 = findViewById(R.id.textForecastDay5);
+
+        // 5-Day Forecast: right side Min/Max
+        forecastMin1 = findViewById(R.id.textForecastMin1);
+        forecastMin2 = findViewById(R.id.textForecastMin2);
+        forecastMin3 = findViewById(R.id.textForecastMin3);
+        forecastMin4 = findViewById(R.id.textForecastMin4);
+        forecastMin5 = findViewById(R.id.textForecastMin5);
+
+        forecastMax1 = findViewById(R.id.textForecastMax1);
+        forecastMax2 = findViewById(R.id.textForecastMax2);
+        forecastMax3 = findViewById(R.id.textForecastMax3);
+        forecastMax4 = findViewById(R.id.textForecastMax4);
+        forecastMax5 = findViewById(R.id.textForecastMax5);
+
+        // 5-Day Forecast: middle icons
+        forecastIcon1 = findViewById(R.id.iconForecast1);
+        forecastIcon2 = findViewById(R.id.iconForecast2);
+        forecastIcon3 = findViewById(R.id.iconForecast3);
+        forecastIcon4 = findViewById(R.id.iconForecast4);
+        forecastIcon5 = findViewById(R.id.iconForecast5);
 
         Log.d("DEBUG", "setContentView: End");    // Shows in Logcat
 
@@ -205,6 +233,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("WEATHER_RESPONSE", "Calling updateWeatherUI...");        // Shows in Logcat
                 updateWeatherUI(address, updatedAt, weatherDescription, temp, tempMin, tempMax, sunrise,
                         sunset, wind, pressure, humidity);
+
+                // Only fetch 5-Day forecast when we have fresh network data
+                if (!fromCache) {
+                    loadFiveDayForecast(cityName);
+                }
 
                 // Offline banner will now show when using cache...
                 setOfflineBanner(fromCache, lastUpdatedMillis);
@@ -427,14 +460,112 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Fetches and populates 5-day forecast.
      *
      * @param cityName
      */
     private void loadFiveDayForecast(String cityName) {
             WeatherApiService api = ApiClient.getClient().create(WeatherApiService.class);
+
+            Call<ForecastResponse> call = api.getFiveDayForecast(
+                    cityName,
+                    BuildConfig.WEATHER_API_KEY,
+                    "imperial"
+            );
+
+            call.enqueue(new Callback<ForecastResponse>() {
+                @Override
+                public void onResponse(Call<ForecastResponse> call, Response<ForecastResponse> response) {
+                    if (!response.isSuccessful() || response.body() == null) {
+                        Log.e("Forecast", "Error response: "  + response.code());
+                        return;
+                    }
+
+                    ForecastResponse forecast = response.body();
+                    List<ForecastResponse.ForecastItem> items = forecast.list;
+                    if (items == null || items.isEmpty()) {
+                        Log.e("Forecast", "No forecast data");
+                        return;
+                    }
+
+                    SimpleDateFormat dayFormat = new SimpleDateFormat("EEE M/d", Locale.getDefault());
+
+                    setForecastRow(forecastDay1, forecastMin1, forecastMax1, forecastIcon1, items, 0, dayFormat);
+                    setForecastRow(forecastDay2, forecastMin2, forecastMax2, forecastIcon2, items, 8, dayFormat);
+                    setForecastRow(forecastDay3, forecastMin3, forecastMax3, forecastIcon3, items, 16, dayFormat);
+                    setForecastRow(forecastDay4, forecastMin4, forecastMax4, forecastIcon4, items, 24, dayFormat);
+                    setForecastRow(forecastDay5, forecastMin5, forecastMax5, forecastIcon5, items, 32, dayFormat);
+                }
+
+                @Override
+                public void onFailure(Call<ForecastResponse> call, Throwable t) {
+                    Log.e("Forecast", "Failed to load 5-Day forecast", t);
+                }
+            });
     }
 
+    private void setForecastRow(TextView dayTv,
+                                TextView minTv,
+                                TextView maxTv,
+                                ImageView iconTv,
+                                List<ForecastResponse.ForecastItem> items,
+                                int index,
+                                SimpleDateFormat dayFormat) {
+
+        if (dayTv == null || minTv == null || maxTv == null || iconTv == null) return;
+
+        // If the API didn't give enough entries, just clear this line...
+        if (index >= items.size()) {
+            dayTv.setText("");
+            minTv.setText("");
+            maxTv.setText("");
+            iconTv.setVisibility(View.INVISIBLE);
+            return;
+        }
+
+        ForecastResponse.ForecastItem item = items.get(index);
+
+        // LEFT SIDE: date + description - Convert Unix time (seconds) -> Date (ms)...
+        Date date = new Date(item.dt * 1000L);
+        String dayStr = dayFormat.format(date);    // e.g., "Wed 12/3"
+
+        String desc = "";
+        String main = "";
+
+        if (item.weather != null && !item.weather.isEmpty()) {
+            if (item.weather.get(0).description != null) {
+                desc = item.weather.get(0).description;
+            }
+
+            main = desc;
 
 
+            if (item.weather.get(0).description != null) {
+                main = item.weather.get(0).description;
+            }
+        }
 
+        if (desc.isEmpty()) {
+            dayTv.setText(dayStr);
+        } else {
+            dayTv.setText(dayStr + "; " + desc);
+        }
+
+        // RIGHT SIDE: Min / Max temps
+        double min = 0.0;
+        double max = 0.0;
+
+        if (item.main != null) {
+            min = item.main.tempMin;
+            max = item.main.tempMax;
+        }
+
+        minTv.setText(String.format(Locale.getDefault(), "Min %.1f°F", min));
+        maxTv.setText(String.format(Locale.getDefault(), "Max %.1f°F", max));
+
+        // Icon in the middle...
+        String iconKey = !desc.isEmpty() ? desc : main;
+        iconTv.setImageResource(getWeatherIcon(iconKey));
+        iconTv.setVisibility(View.VISIBLE);
+    }
 }
