@@ -31,14 +31,19 @@ This aligns closely with project outline proposal.
 
 
 
-
-
-
-
-
-
 ## In Progress / Planned Changes
+Short-Term Goals:
 
-    - Write code to obtain a 5-Day forecast and Sever weather alerts.
-    - We plan to sync all local changes with out GigHUb repositroy once development stablizes.
-    - We considered adding additional UI features like a 5-Day forecast but ran out of time.
+    - Better error handling for API failures
+    - UI polish and accessibility improvements
+
+Long-term Goals:
+
+    - Sever weather alerts
+    - User settings with a toggle button (units: °F/°C, theme switching)
+    - Geolocation-based default city instead of always "Chicago"
+    - Animations and improved icons
+
+
+## Tools, Frameworks & Technologies
+    - Language: Java
