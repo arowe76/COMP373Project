@@ -51,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
     // Offline banner at top/bottom of the screen
     private TextView offlineBannerTxt;
 
+    // 5-Day Weather Forecast
+    private TextView forecastDay1;
+    private TextView forecastDay2;
+    private TextView forecastDay3;
+    private TextView forecastDay4;
+    private TextView forecastDay5;
+
+
     /**
      * Initializes the app when activity is created.
      * Sets up UI components, binds views and fetches default city weather ("Chicago").
@@ -61,6 +69,14 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("DEBUG", "onCreate: Started");      // Shows in Logcat
         setContentView(R.layout.activity_main);             // This loads UI...
+
+        // 5-Day Forecast
+        forecastDay1 = findViewById(R.id.textForecastDay1);
+        forecastDay2 = findViewById(R.id.textForecastDay2);
+        forecastDay3 = findViewById(R.id.textForecastDay3);
+        forecastDay4 = findViewById(R.id.textForecastDay4);
+        forecastDay5 = findViewById(R.id.textForecastDay5);
+
         Log.d("DEBUG", "setContentView: End");    // Shows in Logcat
 
 

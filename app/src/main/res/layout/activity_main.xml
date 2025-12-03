@@ -120,6 +120,52 @@
                         android:text="Max Temp: 05:05 PM" />
             </LinearLayout>
 
+ 	<LinearLayout
+                android:id="@+id/layoutForecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <TextView
+                    android:id="@+id/textForecastDay1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Day 1: --"
+                    android:padding="4dp" />
+
+                <TextView
+                    android:id="@+id/textForecastDay2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Day 2: --"
+                    android:padding="4dp" />
+
+                <TextView
+                    android:id="@+id/textForecastDay3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Day 3: --"
+                    android:padding="4dp" />
+
+                <TextView
+                    android:id="@+id/textForecastDay4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Day 4: --"
+                    android:padding="4dp" />
+
+                <TextView
+                    android:id="@+id/textForecastDay5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Day 5: --"
+                    android:padding="4dp" />
+            </LinearLayout>
+
+
         </LinearLayout>
 
 
