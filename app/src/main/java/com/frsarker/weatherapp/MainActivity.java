@@ -40,6 +40,7 @@ import retrofit2.Response;
  *    - Dynamically change the background based on current weather conditions
  */
 public class MainActivity extends AppCompatActivity {
+
     // API endpoint base URL for weather data
     private final String API_URL = "https://api.openweathermap.org/data/2.5/weather";
     // API key, stored securely in BuildConfig
@@ -48,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     // Repository + Cache
     private WeatherRepository weatherRepository;
     private WeatherCache weatherCache;
-
 
     // UI elements for user input
     private EditText searchCityEditText;
@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Middle icons for each day
     private ImageView forecastIcon1, forecastIcon2, forecastIcon3, forecastIcon4, forecastIcon5;
-
 
 
     /**
@@ -149,9 +148,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Set default city weather when app launches...
         fetchWeatherData("Chicago");
-
-        // Set up search...
-        // searchButton = findViewById(R.id.searchButton);
 
         // Set up search button click listener...
         searchButton.setOnClickListener(v -> {
