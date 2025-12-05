@@ -122,3 +122,14 @@ Long-term Goals:
         * Facade pattern
         * Single Responsibility Principle (SRP)
         * Dependency Inversion Princiiple (DIP)
+
+
+## System Architecture Summary
+Core Components:
+
+    * MainActivity - UI controller, handles search & main display
+    * WeatherRepository - mediates between API + cache
+    * WeatherCache - stores last successful responses
+    * ApiClient/WeatherApiService - handles Retrofit API calls
+    * WeatherResponse/ForecastResponse - data models for JSON mapping
+    * WeatherSyncWorker - planned periodic sync worker
