@@ -33,19 +33,64 @@ Current Weather Retrieval:
 
 5-Day Forecast:
 
+    - Parses multi-entry JSON forecast
+    - Extracts daily min/max temperatures
+    - Displays weather icons and day names
+    - Integrates into the MainActivity UI layout
 
 UI/UX Improvements:
+
+    - Redesigned layout to support forecast weather
+    - Added dynamic background colors depending on weather
+    - Updated text colors to support visibility accross different backgrounds
+    - Debugged UI issues using Toasts and Logcat
 
 
 App Architecture Enhancements:
 
+    - Repository + Cache layer (WeatherCache, WeatherRepository)
+    - Refactor toward MVA architecture
+    - Placeholder WeatherSyncWorker prepared for auto-sync through WorkManager
 
 Build & Tooling Improvements:
 
+    - Updated Gradle dependencies
+    - Configured SDK compatibility
+    - Cleaned up project structure for Android Studio/IntelliJ 
+    - Improved documentation throughout Java classes
 
 
+## Team Contribution Summary
+Our team contributed to expanding and architecturally restructuring a pre-existing weather app.  Key contributions
+include:
 
+    - Integrated 5-Day Forecast Functionality
+        * JSON parsing, UI elements, temperature formatting
 
+    - Architectural Refactoring
+        * Applied Model-View Adapter sturcture
+        * Moved API logic into WeatherRepository
+        * Added caching logic to support offline fallback
+        * Improved object models (WeatherResponse, Forecast Response, nested classes)
+
+    - Improving Code Readability & Maintainability
+        * Added detailed comments explaining API calls, caching, background logic, & UI updates
+        * Simplified MainActivity areas and methods
+
+    - Sync & Automation Preparation
+        * Implemented placeholder WeatherSyncWorker and prepared WorkManager integration
+        * Designed flow for periodic background refresh
+
+    - Technical Debugging
+        * Fixed UI crashes, XML issues, broken click listeners
+        * Used Logcat/Toast messages for debuggind Android-specified problems
+        * Ensured that resources loaded correctly
+
+    - Documentation & Collaboration
+        * Updated README
+        * Coordinated IntelliJ <--> GitHub syncing issues
+        * Ensured secure API key storage
+        * Created slide content for final presentation
 
 
 ## In Progress / Planned Changes
