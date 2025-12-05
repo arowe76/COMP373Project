@@ -23,7 +23,24 @@ This project extends a previously built Java weather service into a full Android
     - Utilizes architectural patterns such as MVA (Modern-View-Adapter), Observer and Facade
     - Implements WorkManager for auto-sync functionality (planned and partially scaffolded)
 
-This aligns closely with project outline proposal.
+
+## Key Features Implemented
+Current Weather Retrieval:
+
+    - Real-time API calls using Retrofit and Gson
+    - Displays temperature, humidity, wind speed, conditions, country, sunsrise/sunset, etc.
+    - API key stored privately in local.properties
+
+5-Day Forecast:
+
+
+UI/UX Improvements:
+
+
+App Architecture Enhancements:
+
+
+Build & Tooling Improvements:
 
 
 
@@ -47,3 +64,16 @@ Long-term Goals:
 
 ## Tools, Frameworks & Technologies
     - Language: Java
+    - IDE: Android Studio/IntelliJ IDEA
+    - Android Components:
+        * Activities
+        * WorkManager
+        * View System (TextView, ImageView, Layouts)
+    - Networking: Retrofit + OkHttp
+    - JSON Parsing: Gson
+    - Architecture: 
+        * Model-View-Adapter (MVA)
+        * Observer pattern
+        * Facade pattern
+        * Single Responsibility Principle (SRP)
+        * Dependency Inversion Princiiple (DIP)
